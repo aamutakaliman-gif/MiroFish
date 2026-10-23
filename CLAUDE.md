@@ -17,6 +17,16 @@ Pemilik repo meminta selalu diingatkan. Setiap sesi:
    Kalau nama atau isinya mengarah ke dokumen dinas, perkara, atau data pribadi, tolak dan beri tahu pemilik.
 3. Jangan pernah menampilkan isi `.env` (berisi kunci API) dan jangan commit `.env`.
 
+## WAJIB: setiap perubahan disinkronkan ke GitHub
+
+Pemilik repo minta semua perubahan kode selalu ter-update ke GitHub (`origin` = github.com/aamutakaliman-gif/MiroFish, branch `main`).
+
+1. Di awal sesi, jalankan `git pull --ff-only origin main` supaya mulai dari versi terbaru.
+2. Setelah selesai mengubah file apa pun di repo ini: jalankan tes yang relevan (`cd backend && uv run pytest -q`), lalu
+   `git add` file yang diubah saja, `git commit` dengan pesan yang jelas, dan `git push origin main`. Laporkan hash commit-nya.
+3. JANGAN commit `.env`, bahan simulasi/unggahan, folder `backend/uploads`, hasil simulasi, atau laporan — hanya kode, konfigurasi contoh, dan dokumentasi.
+4. Kalau push gagal karena belum login GitHub, minta pemilik login lewat jendela Git Credential Manager yang muncul, lalu ulangi push.
+
 ## Menjalankan
 
 - Pemasangan Windows: `powershell -ExecutionPolicy Bypass -File .\install-windows.ps1`

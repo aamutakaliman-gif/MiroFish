@@ -28,6 +28,8 @@ class Config:
     LLM_API_KEY = os.environ.get('LLM_API_KEY')
     LLM_BASE_URL = os.environ.get('LLM_BASE_URL', 'https://api.openai.com/v1')
     LLM_MODEL_NAME = os.environ.get('LLM_MODEL_NAME', 'gpt-4o-mini')
+    # Retries on 429/5xx (OpenAI SDK default is 2); raise for free-tier rate limits
+    LLM_MAX_RETRIES = int(os.environ.get('LLM_MAX_RETRIES', '10'))
     
     # Zep配置
     ZEP_API_KEY = os.environ.get('ZEP_API_KEY')
