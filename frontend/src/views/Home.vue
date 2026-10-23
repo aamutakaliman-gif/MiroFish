@@ -167,7 +167,7 @@
               </div>
 
               <div class="data-warning">
-                ⚠ File yang diunggah dikirim ke Anthropic (Claude) dan Zep Cloud.
+                ⚠ File yang diunggah dikirim ke penyedia AI (Google Gemini / Anthropic Claude) dan Zep Cloud.
                 JANGAN unggah dokumen dinas, bahan perkara, atau data pribadi.
               </div>
             </div>
@@ -306,7 +306,7 @@ const startSimulation = () => {
   const fileNames = files.value.map(f => '- ' + f.name).join('\n')
   const confirmed = window.confirm(
     'PERINGATAN DATA\n\n' +
-    'File berikut akan dikirim ke server Anthropic (Claude) dan Zep Cloud:\n' +
+    'File berikut akan dikirim ke penyedia AI (Google Gemini / Anthropic Claude) dan Zep Cloud:\n' +
     fileNames + '\n\n' +
     'Pastikan TIDAK ada dokumen dinas, bahan perkara, atau data pribadi.\n\n' +
     'Lanjutkan?'
