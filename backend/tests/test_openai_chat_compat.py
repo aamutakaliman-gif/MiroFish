@@ -5,6 +5,7 @@ import pytest
 from app.utils.openai_chat_compat import (
     create_chat_completion,
     extract_chat_completion_text,
+    is_claude_family,
     is_gpt5_family,
 )
 
@@ -121,3 +122,44 @@ def test_extracts_text_from_supported_content_shapes():
 
     assert extract_chat_completion_text(response) == "first second third"
     assert extract_chat_completion_text(SimpleNamespace(choices=[])) == ""
+
+
+def test_claude_omits_temperature_and_keeps_max_tokens():
+    recorder = CompletionRecorder()
+    messages = [{"role": "user", "content": "hello"}]
+
+    create_chat_completion(
+        client_for(recorder),
+        model="claude-haiku-5-5",
+        messages=messages,
+        temperature=0.3,
+        max_tokens=800,
+    )
+
+    assert recorder.calls == [
+        {"model": "claude-haiku-5-5", "messages": messages, "max_tokens": 800}
+    ]
+
+
+def test_claude_gets_default_max_tokens_when_none():
+    recorder = CompletionRecorder()
+    messages = [{"role": "user", "content": "hello"}]
+
+    create_chat_completion(
+        client_for(recorder),
+        model="Claude-Haiku-5-5",
+        messages=messages,
+        temperature=0.7,
+        max_tokens=None,
+    )
+
+    assert "temperature" not in recorder.calls[0]
+    assert recorder.calls[0]["max_tokens"] == 8192
+
+
+@pytest.mark.parametrize(
+    "model, expected",
+    [("claude-haiku-5-5", True), (" CLAUDE-sonnet ", True), ("qwen-plus", False), ("", False), (None, False)],
+)
+def test_is_claude_family(model, expected):
+    assert is_claude_family(model) is expected

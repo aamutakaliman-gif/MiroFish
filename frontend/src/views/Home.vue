@@ -165,6 +165,11 @@
                   </div>
                 </div>
               </div>
+
+              <div class="data-warning">
+                ⚠ File yang diunggah dikirim ke Anthropic (Claude) dan Zep Cloud.
+                JANGAN unggah dokumen dinas, bahan perkara, atau data pribadi.
+              </div>
             </div>
 
             <!-- 分割线 -->
@@ -297,7 +302,17 @@ const scrollToBottom = () => {
 // 开始模拟 - 立即跳转，API调用在Process页面进行
 const startSimulation = () => {
   if (!canSubmit.value || loading.value) return
-  
+
+  const fileNames = files.value.map(f => '- ' + f.name).join('\n')
+  const confirmed = window.confirm(
+    'PERINGATAN DATA\n\n' +
+    'File berikut akan dikirim ke server Anthropic (Claude) dan Zep Cloud:\n' +
+    fileNames + '\n\n' +
+    'Pastikan TIDAK ada dokumen dinas, bahan perkara, atau data pribadi.\n\n' +
+    'Lanjutkan?'
+  )
+  if (!confirmed) return
+
   // 存储待上传的数据
   import('../store/pendingUpload.js').then(({ setPendingUpload }) => {
     setPendingUpload(files.value, formData.value.simulationRequirement)
@@ -740,6 +755,17 @@ const startSimulation = () => {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: #999;
+}
+
+.data-warning {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid #C62828;
+  background: #FDECEA;
+  color: #8E1B1B;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
 
 .file-list {

@@ -17,6 +17,21 @@ def is_gpt5_family(model: Optional[str]) -> bool:
     return model.strip().lower().startswith("gpt-5")
 
 
+# Default output limit for Claude when the caller passes none.
+CLAUDE_DEFAULT_MAX_TOKENS = 8192
+
+
+def is_claude_family(model: Optional[str]) -> bool:
+    """Return True for Anthropic Claude models (OpenAI-compatible endpoint).
+
+    Newer Claude models reject temperature values below 1 on that endpoint,
+    so temperature is omitted for them.
+    """
+    if not model:
+        return False
+    return model.strip().lower().startswith("claude")
+
+
 def create_chat_completion(
     client: Any,
     *,
@@ -44,9 +59,13 @@ def create_chat_completion(
         kwargs["response_format"] = response_format
 
     gpt5_family = is_gpt5_family(model)
+    claude_family = is_claude_family(model)
 
-    if temperature is not None and not gpt5_family:
+    if temperature is not None and not gpt5_family and not claude_family:
         kwargs["temperature"] = temperature
+
+    if max_tokens is None and claude_family:
+        max_tokens = CLAUDE_DEFAULT_MAX_TOKENS
 
     if max_tokens is not None:
         if gpt5_family:
