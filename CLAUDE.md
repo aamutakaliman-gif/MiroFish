@@ -23,3 +23,18 @@ Pemilik repo meminta selalu diingatkan. Setiap sesi:
 - Menjalankan: `start-mirofish.bat` (atau `npm run dev`), buka http://localhost:3000
 - Tes backend: `cd backend && uv run pytest -q`
 - Mulai simulasi kecil (di bawah 40 ronde) karena biaya token besar.
+
+## Mengoperasikan MiroFish lewat API (backend http://localhost:5001)
+
+Pastikan `start-mirofish.bat` sedang jalan. Alur penuh (aturan pengingat data di atas tetap berlaku):
+
+1. `POST /api/graph/ontology/generate` (multipart): `files` (PDF/MD/TXT), `simulation_requirement`, `project_name` → dapat `project_id`.
+2. `POST /api/graph/build` JSON `{"project_id"}` → pantau `GET /api/graph/task/<task_id>`.
+3. `POST /api/simulation/create` JSON `{"project_id"}` → dapat `simulation_id`.
+4. `POST /api/simulation/prepare` JSON `{"simulation_id"}` → pantau `POST /api/simulation/prepare/status`.
+5. `POST /api/simulation/start` JSON `{"simulation_id", "max_rounds": 5}` — selalu pakai `max_rounds` kecil (kuota Gemini gratis); pantau `GET /api/simulation/<id>/run-status`.
+6. `POST /api/report/generate` JSON `{"simulation_id"}` → pantau `POST /api/report/generate/status`, baca `GET /api/report/<report_id>`.
+7. Tanya-jawab: `POST /api/report/chat`, wawancara agen: `POST /api/simulation/interview`.
+
+Detail parameter: baca `backend/app/api/graph.py`, `simulation.py`, `report.py` sebelum memanggil.
+Daftar proyek/simulasi yang ada: `GET /api/graph/project/list`, `GET /api/simulation/list`, `GET /api/report/list`.
